@@ -1,0 +1,96 @@
+---
+title: "Introduction to dreviewr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to dreviewr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(dreviewr)
+```
+
+
+## About dreviewr
+
+dreviewr is a package that aims to help data scientists to review their data. It provides a set of functions that can be used to check the quality of the data. With dreviewr you can easily get a detailed summary of any data frame. This summary includes the number of observations, number of variables, variable names, variable types, and some useful statistics for each variable. It also includes information about possible inconsistencies in the data, such as missing values, duplicated rows, and outliers. These inconsistencies are marked with a warning sign, so they can be easily identified.
+
+## Data
+
+For exploring the functions of dreviewr, we will use some data sets from the `nycflights13` package and the `palmerpenguins` package. We will also use the `iris` data set, which is included in the `datasets` package.
+
+```{r setup}
+library(nycflights13)
+library(palmerpenguins)
+```
+
+## Reviewing data
+
+### `review`
+
+Main function is `review`, which takes a data frame or a path to a file and performs all the checks. It returns a summary of the data as a data frame, and also prints it to the console, coupled with a summary of the inconsistencies found as a readable list.
+
+```{r review}
+review(iris)
+```
+
+### `review_classes`
+
+`review_classes` takes a data frame and returns a character vector with the classes of each column.
+
+```{r review_classes}
+review_classes(penguins)
+```
+
+### `review_duplicates`
+
+`review_duplicates` takes a data frame and returns a filtered data frame of the original, with the duplicated rows.
+
+```{r review_duplicates}
+review_duplicates(iris)
+```
+
+### `review_missing`
+
+`review_missing` takes a data frame and returns a data frame with the number of missing values for each column.
+
+```{r review_missing}
+review_missing(flights)
+```
+
+### `review_outliers` and `review_far_outliers`
+
+`review_outliers` takes a data frame and returns a data frame with the number of outliers for each column. `review_far_outliers` does the same, but for far outliers.
+
+```{r review_outliers}
+review_outliers(iris)
+```
+
+```{r review_far_outliers}
+review_far_outliers(flights)
+```
+
+### `review_stats`
+
+`review_stats` takes a data frame and returns a data frame with some useful statistics for each column, depending on its class. There are also available individual functions for some classes, such as `review_factor_stats`, `review_numeric_stats`, `review_character_stats` and `review_logical_stats`.
+
+```{r review_stats}
+review_stats(penguins)
+```
+
+### `review_warnings`
+
+`review_warnings` takes a data frame and returns another data frame with the explicit warnings about the inconsistencies found in the data.
+
+```{r review_warnings}
+review_warnings(penguins)
+```
+
+## Extra information
+
+As the return value of `review` is a list which in turn contains a data frame, it is possible to access to the data frame directly. This is useful if you want to use the summary of the data for further analysis using other packages like `dplyr` or `ggplot2` for tidy data analysis and visualization.

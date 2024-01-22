@@ -1,0 +1,39 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# dreviewr
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+dreviewr is a package that aims to help data scientists to review their data. It provides a set of functions that can be used to check the quality of the data. With dreviewr you can easily get a detailed summary of any data frame. This summary includes the number of observations, number of variables, variable names, variable types, and some useful statistics for each variable. It also includes information about possible inconsistencies in the data, such as missing values, duplicated rows, and outliers. These inconsistencies are marked with a warning sign, so they can be easily identified.
+
+Main function is `review`, which performs all the checks and returns a summary of the data as a data frame, and also prints it to the console, coupled with a summary of the inconsistencies found as a readable list. You can also access to individual summaries for each consult, as dreveiwr provides all of its review functions as individual functions.
+
+## Example
+
+This is a basic example of how to use dreviewr to review a data frame:
+
+```{r example}
+library(dreviewr)
+
+review(iris)
+```
+
+It is also possible to review a data frame by specifying the path to an external file. It also supports URLs!
+
+```{r example2}
+review("https://raw.githubusercontent.com/ismayc/pnwflights14/master/data/flights.csv")
+```

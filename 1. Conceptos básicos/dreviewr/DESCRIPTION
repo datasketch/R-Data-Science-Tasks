@@ -1,0 +1,29 @@
+Package: dreviewr
+Type: Package
+Title: dreviewr: Detailed Summary of Data Frames
+Version: 1.0.0
+Authors@R: 
+    person(given = "Daniel Andrés",
+           family = "Delgado León",
+           email = "daniel.delgadol@outlook.com",
+           role = c("aut", "cre"))
+Maintainer: Daniel Andrés Delgado León <daniel.delgadol@outlook.com>
+Description: Provides a detailed summary of data frames. It includes the
+    number of observations, number of variables, variable names, variable
+    types, and some useful statistics for each variable. It also includes
+    information about possible inconsistencies in the data, such as
+    missing values, duplicated rows, and outliers. These inconsistencies
+    are marked with a warning sign, so they can be easily identified.
+Imports:
+    rio
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.0
+VignetteBuilder: knitr
