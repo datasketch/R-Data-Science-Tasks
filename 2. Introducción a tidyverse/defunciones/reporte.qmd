@@ -1,0 +1,123 @@
+---
+title: "Defunciones en Colombia - Reporte"
+author: "Daniel Delgado"
+execute:
+  echo: false
+format:
+  html:
+    toc: true
+    code-fold: true
+  # pdf:
+  #   toc: true
+  #   number-sections: true
+editor: visual
+---
+
+```{r load libraries}
+#| output: false
+
+library("dplyr")
+library("tidyr")
+library("readxl")
+library("ggplot2")
+```
+
+## Antes de la limpieza
+
+```{r load data}
+#| output: false
+
+raw_weeks <- read_xlsx(
+  "data/defunciones.xlsx",
+  sheet = "Semanas"
+)
+
+raw_defunctions <- read_xlsx(
+  "data/defunciones.xlsx",
+  sheet = "Tabla seguimiento mortalidad"
+)
+```
+
+Inicialmente, dado que los datos se encontraban en un Excel, y las hojas de cálculo no estaban estructuradas de manera adecuada para un análisis inmediato (usando alguna herramienta de análisis de datos), al importar los datos se incluía información de celdas que no eran precisamente parte de estos (como por ejemplo, la descripción, notas, fuentes de los datos, etc.) como se puede ver a continuación:
+
+```{r raw data weeks}
+#| fig.align: "center"
+
+raw_weeks %>%
+  head(10) %>%
+  knitr::kable()
+```
+
+```{r raw data defunctions}
+#| fig.align: "center"
+
+raw_defunctions %>%
+  head(10) %>%
+  knitr::kable()
+```
+
+Delimitando el rango de celdas a importar, logré importar los datos de manera adecuada para su posterior limpieza y ordenamiento como se muestra a continuación:
+
+```{r load data2}
+#| output: false
+
+raw_weeks <- read_xlsx(
+  "data/defunciones.xlsx",
+  sheet = "Semanas",
+  range = "A12:O64",
+  col_names = FALSE
+)
+
+raw_defunctions <- read_xlsx(
+  "data/defunciones.xlsx",
+  sheet = "Tabla seguimiento mortalidad",
+  range = "A13:O12463",
+  col_names = FALSE,
+  col_types = c(
+    "text",
+    rep("guess", 14)
+  )
+)
+```
+
+```{r raw data weeks2}
+#| fig.align: "center"
+
+raw_weeks %>%
+  head(10) %>%
+  knitr::kable()
+```
+
+```{r raw data defunctions2}
+#| fig.align: "center"
+
+raw_defunctions %>%
+  head(10) %>%
+  knitr::kable()
+```
+
+## Después de la limpieza
+
+```{r clean data}
+#| output: false
+
+source("script.R")
+```
+
+Después de todo el proceso de limpieza y ordenamiento, obtuve dos data frames que contienen la información de las semanas y las defunciones respectivamente, y que cumplen con los principios de "tidy data" (cada variable forma una columna y cada observación una fila)
+
+```{r clean data weeks}
+#| fig.align: "center"
+
+weeks %>%
+  head(10) %>%
+  knitr::kable()
+```
+
+```{r clean data defunctions}
+#| fig.align: "center"
+
+defunctions %>%
+  head(10) %>%
+  knitr::kable()
+```
