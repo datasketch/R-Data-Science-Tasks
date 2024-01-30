@@ -87,7 +87,6 @@ make_cards <- function(df) {
         inputId = card_names[x],
         label = HTML(
           glue(
-            "<div class='card'>",
             "<div class='card-body'>",
             "<h4 class='card-title'>",
             "{case$victima}",
@@ -106,7 +105,112 @@ make_cards <- function(df) {
             "</div>",
             "</div>"
           )
-        )
+        ),
+        class = "card"
+      )
+    }
+  )
+}
+
+make_modals <- function(df, input) {
+  # df: data frame
+  # input: input to filter
+  # returns: list of modals
+  total <- nrow(df)
+
+  card_names <- paste0("card-", seq_len(total))
+
+  map(
+    seq_len(total),
+    function(x) {
+      case <- df[x, ]
+
+      parsed_crimes <- gsub(
+        pattern = "\\|",
+        replacement = ", ",
+        x = case$delito
+      )
+
+      parsed_modalities <- gsub(
+        pattern = "\\|",
+        replacement = ", ",
+        x = case$modalidad
+      )
+
+      observeEvent(
+        input[[card_names[x]]],
+        {
+          showModal(
+            modalDialog(
+              title = case$victima,
+              HTML(
+                glue(
+                  "<div class='modal-body'>",
+                  "<p class='modal-text'>",
+                  "<b>Edad:</b> {case$edad}",
+                  "</br>",
+                  "<b>Fecha:</b> {case$fecha}",
+                  "</br>",
+                  "<b>Departamento:</b> {case$departamento}",
+                  "</br>",
+                  "<b>Municipio:</b> {case$municipio}",
+                  "</br>",
+                  "<b>Barrio:</b> {case$barrio}",
+                  "</p>",
+                  "<p class='modal-text'>",
+                  "<b>Presunto agresor:</b> {case$presunto_agresor}",
+                  "</br>",
+                  "<b>Relación con la víctima:</b> {case$relacion_victima}",
+                  "</br>",
+                  "<b>Delito cometido:</b> {parsed_crimes}",
+                  "</br>",
+                  "<b>Modalidad:</b> {parsed_modalities}",
+                  "</br>",
+                  "</p>",
+                  ifelse(
+                    !is.na(case$comentario),
+                    glue(
+                      "<p class='modal-text'>",
+                      "<b>Comentario:</b>",
+                      "</br>",
+                      "{case$comentario}",
+                      "</p>",
+                    ),
+                    ""
+                  ),
+                  ifelse(
+                    !is.na(case$fuente),
+                    glue(
+                      "<p class='modal-text'>",
+                      "<b>Fuente:</b>",
+                      "</br>",
+                      "<a href='{case$fuente}' target='_blank'> {case$fuente} </a>",
+                      "</p>",
+                    ),
+                    ""
+                  ),
+                  ifelse(
+                    !is.na(case$fuente_2),
+                    glue(
+                      "<p class='modal-text'>",
+                      "<b>Fuente 2:</b>",
+                      "</br>",
+                      "<a href='{case$fuente_2}' target='_blank'> {case$fuente_2} </a>",
+                      "</p>",
+                    ),
+                    ""
+                  ),
+                  "</div>"
+                )
+              ),
+              footer = modalButton(
+                "Cerrar"
+              ),
+              size = "m",
+              easyClose = TRUE
+            )
+          )
+        }
       )
     }
   )
@@ -116,15 +220,16 @@ make_map <- function(df, departments) {
   # df: data frame
   # departments: departments to filter
   # returns: leaflet map
-  df |>
+  df <- df |>
     filter_if_not_empty(
       column = departamento,
       input = departments
     ) |>
     filter(
       !is.na(longitud) & !is.na(latitud)
-    ) |>
-    leaflet() |>
+    )
+
+  leaflet(df) |>
     addTiles() |>
     addMarkers(
       lng = ~ longitud,
@@ -156,7 +261,7 @@ plot_by_age <- function(df, input) {
   # df: data frame
   # input: input to plot
   # returns: plot
-  df |>
+  df <- df |>
     filter(
       edad >= input[1] & edad <= input[2]
     ) |>
@@ -165,7 +270,9 @@ plot_by_age <- function(df, input) {
     ) |>
     summarise(
       n = n()
-    ) |>
+    )
+
+  df |>
     hchart(
       type = "column",
       hcaes(
@@ -194,13 +301,15 @@ plot_by_month <- function(df, column, input) {
   # input: input to plot
   # returns: highcharts plot
   if (length(input) == 0) {
-    df |>
+    df <- df |>
       group_by(
         month = month(fecha, label = TRUE)
       ) |>
       summarise(
         n = n()
-      ) |>
+      )
+
+    df |>
       hchart(
         type = "column",
         hcaes(
@@ -222,7 +331,7 @@ plot_by_month <- function(df, column, input) {
         )
       )
   } else {
-    df |>
+    df <- df |>
       filter(
         {{ column }} %in% input
       ) |>
@@ -233,7 +342,9 @@ plot_by_month <- function(df, column, input) {
       summarise(
         n = n(),
         .groups = "drop"
-      ) |>
+      )
+
+    df |>
       hchart(
         type = "column",
         hcaes(

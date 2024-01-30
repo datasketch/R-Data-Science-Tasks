@@ -12,7 +12,16 @@ data <- read_csv(
 )
 
 ui <- navbarPage(
-  "Feminicidios en Colombia 2017",
+  header = tags$head(
+    tags$link(
+      rel = "stylesheet",
+      type = "text/css",
+      href = "styles.css"
+    )
+  ),
+
+  title = "Feminicidios en Colombia 2017",
+
   # Filter femicides by different variables
   tabPanel(
     "Casos",
@@ -228,7 +237,16 @@ server <- function(input, output, session) {
 
   # Render cards
   output$cards <- renderUI({
-    make_cards(filtered_df())
+    filtered_df() |>
+      make_cards()
+  })
+
+  # Render modals
+  observe({
+    filtered_df() |>
+      make_modals(
+        input = input
+      )
   })
 
   # Render table
@@ -241,7 +259,9 @@ server <- function(input, output, session) {
   # Render map
   output$map <- renderLeaflet({
     filtered_df() |>
-      make_map(departments = input$department_map)
+      make_map(
+        departments = input$department_map
+      )
   })
   
 

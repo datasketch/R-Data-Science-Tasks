@@ -27,6 +27,7 @@ Esta carpeta contiene los archivos necesarios para la construcción de la aplica
 
 ## Tareas pendientes
 
+  - [x] Agregar modals para cada card.
   - [ ] Reescribir el `server` usando `reactiveValues` y `observe`.
-  - [ ] Estilizar la aplicación usando CSS (cards y markers' popups).
+  - [x] Estilizar la aplicación usando CSS (cards y markers' popups).
   - [ ] Vincular el topojson de la actividad anterior con la aplicación.
